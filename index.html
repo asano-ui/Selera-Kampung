@@ -13,6 +13,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:560px;margin-inline:auto;padding-bottom:150px}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 header{padding:16px 16px 6px;display:flex;align-items:flex-start;gap:10px}
 header>div{flex:1}
 h1{margin:0;font-size:1.5rem;letter-spacing:-.01em;font-family:"Playfair Display",Georgia,"Times New Roman",serif}
@@ -60,9 +61,14 @@ h2{font-size:1rem;margin:14px 16px 8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 16px 10px}
 .card .top{display:flex;gap:8px;margin-bottom:8px}
 .fld{width:100%;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 10px;font:inherit;min-width:0}
-.sz{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.sz div{display:flex;flex-direction:column;gap:4px}
-.sz small{color:var(--mute)}
+.sz{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px}
+.sz-box{position:relative;display:flex;flex-direction:column;gap:4px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:12px;padding:8px}
+.sz-hd{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.sz small{color:var(--mute);font-size:.78rem}
+.sz-del{border:0;background:rgba(184,58,36,.2);color:#ff8a75;border-radius:7px;width:24px;height:24px;font-size:1rem;line-height:1;font-weight:700;cursor:pointer;display:grid;place-items:center;padding:0;flex:0 0 auto}
+.sz-del:active{background:var(--busy);color:#fff}
+.sz-acts{display:flex;gap:8px;margin-top:8px}
+.sz-acts .btn{padding:9px 10px;font-size:.84rem}
 .msg{margin:0 16px 8px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--kunyit) 25%,var(--card));font-size:.9rem}
 .stp{display:flex;align-items:center;gap:8px;margin:6px 16px}
 .stp span{flex:1}.stp button{width:42px;height:42px;border-radius:10px;border:2px solid var(--leaf);background:none;color:var(--leaf);font-size:1.3rem;font-weight:700;cursor:pointer}
@@ -125,17 +131,19 @@ h2{font-size:1rem;margin:14px 16px 8px}
 .tc .bd{position:absolute;bottom:12px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#3fae60}
 .tc .bb{position:absolute;bottom:12px;left:50%;width:32px;height:4px;margin-left:-16px;border-radius:2px;background:#e0a233}
 .step{cursor:pointer}
-#lock{position:fixed;inset:0;z-index:50;background:#0c0a08;display:none;align-items:center;justify-content:center;padding:24px}
+#lock{position:fixed;inset:0;z-index:50;background:#0c0a08;display:none;align-items:center;justify-content:center;padding:24px;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #lock .lk{width:100%;max-width:320px;text-align:center}
 .lkt{font-family:"Playfair Display",Georgia,"Times New Roman",serif;font-size:1.6rem;color:#f3e7d1}
 .lks{color:#b3a58c;margin:6px 0 18px;font-size:.9rem}
-.dots{display:flex;gap:14px;justify-content:center;margin-bottom:10px}
-.dots i{width:14px;height:14px;border-radius:50%;border:2px solid #8a6a2e;display:inline-block}
-.dots i.on{background:#d9a95b;border-color:#d9a95b}
+.dots{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
+.dots i{width:13px;height:13px;border-radius:50%;border:2px solid #8a6a2e;display:inline-block;transition:background-color .06s ease,border-color .06s ease,transform .06s ease}
+.dots i.on{background:#d9a95b;border-color:#d9a95b;transform:scale(1.12)}
 .lkm{min-height:1.3em;color:#e0705a;font-size:.85rem;margin-bottom:12px}
-.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.pad button{aspect-ratio:1.4;border-radius:16px;border:1.5px solid #3a2d1c;background:#1b1510;color:#f1e6d3;font:inherit;font-size:1.5rem;cursor:pointer}
-.pad button:active{background:#d9a95b;color:#2a1d0a}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;touch-action:manipulation}
+.pad button{aspect-ratio:1.4;border-radius:16px;border:1.5px solid #3a2d1c;background:#1b1510;color:#f1e6d3;font:inherit;font-size:1.5rem;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .04s ease,background-color .04s ease}
+.pad button:active,.pad button.pressed{background:#d9a95b;color:#2a1d0a;border-color:#d9a95b;transform:scale(.95)}
+.lkcancel{margin-top:16px;width:100%;border:1.5px solid #3a2d1c;background:none;color:#b3a58c;border-radius:12px;padding:11px;font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation}
+.lkcancel:active{background:#1b1510;color:#f1e6d3}
 .pinf{-webkit-text-security:disc;text-security:disc}
 .qrw{padding:8px 16px;text-align:center}
 .qrimg{width:100%;max-width:340px;background:#fff;padding:12px;border-radius:16px}
@@ -154,7 +162,7 @@ h2{font-size:1rem;margin:14px 16px 8px}
 <body>
 <div id="app"></div>
 <input type="file" id="qrfile" accept="image/*" style="display:none">
-<div id="lock"><div class="lk"><div class="lkt" id="lkt"></div><div class="lks">Masukkan PIN 4 digit</div><div class="dots" id="ldots"></div><div class="lkm" id="lmsg"></div><div class="pad"><button data-a="key" data-k="1">1</button><button data-a="key" data-k="2">2</button><button data-a="key" data-k="3">3</button><button data-a="key" data-k="4">4</button><button data-a="key" data-k="5">5</button><button data-a="key" data-k="6">6</button><button data-a="key" data-k="7">7</button><button data-a="key" data-k="8">8</button><button data-a="key" data-k="9">9</button><span></span><button data-a="key" data-k="0">0</button><button data-a="key" data-k="del" aria-label="Padam">⌫</button></div></div></div>
+<div id="lock"><div class="lk"><div class="lkt" id="lkt"></div><div class="lks" id="lks">Masukkan PIN 6 digit</div><div class="dots" id="ldots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lkm" id="lmsg"></div><div class="pad" id="pinpad"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><span></span><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="Padam">⌫</button></div><button type="button" class="lkcancel" id="lkcancel" style="display:none">Batal</button></div></div>
 <div class="sheet-bg" id="sbg"><div class="sheet"><h3 id="stitle"></h3><div id="snotebox" style="display:none;margin-bottom:12px"><input class="fld" id="snote" placeholder="Catatan (cth kurang manis)" maxlength="40" autocomplete="off"><div class="chips" style="padding:8px 0 0;flex-wrap:wrap"><button class="chip" data-a="nchip" data-t="Kosong">Kosong</button><button class="chip" data-a="nchip" data-t="Kurang Manis">Kurang Manis</button><button class="chip" data-a="nchip" data-t="Manis">Manis</button><button class="chip" data-a="nchip" data-t="Kurang Ais">Kurang Ais</button></div></div><div class="sizes" id="sizes"></div><button class="cancel" data-a="cancelsize">Batal</button></div></div>
 <script>
 window.__fbReady=new Promise(function(res){window.__fbOk=res});
@@ -204,6 +212,8 @@ var st=null;
 try{st=JSON.parse(localStorage.getItem("kiraMakanan2")||"null")}catch(e){}
 if(!st||!st.tables){st={menu:defMenu(),tables:defTables(),cols:3,rows:4};
  try{var old=JSON.parse(localStorage.getItem("kiraMakanan")||"null");if(old&&old.length===12)old.forEach(function(o,i){st.tables[i].items=o})}catch(e){}}
+// Migrate legacy 4-digit PIN cleanly so user isn't permanently locked out on a 6-digit pad
+if(st.pinHash&&st.pinLen!==6){st.pinHash='';st.pinSalt='';st.pinLen=0;try{localStorage.removeItem('kiraAuth')}catch(e){}}
 if(!st.title)st.title="Selera Kampung";document.title=st.title;st.tables.forEach(function(t){if(!t.id)t.id=nid()});var view="floor",sel=0,step=0,draft=[],pending=null,askPay=false,eTab="menu",eCat="nasi",selT=-1,msg="",askReset=false,splitN=3,askWho=-1,rc=null,rcBack="floor",hFrom="",hTo="",flt="all",oq="",pendingC="",qrAmt=0,qrBack="bill",qrWho=-1,pays=[],unsubPay=null,histList=[];
 function cache(){try{localStorage.setItem("kiraMakanan2",JSON.stringify(st))}catch(e){}}
 function save(){cache();if(db&&cS&&tS&&syncSt!=='wait'){try{push()}catch(e){}}}
@@ -224,8 +234,14 @@ function cnt(t){return t.items.filter(function(x){return x.price>0}).length}
 function since(t){var m=0;t.items.forEach(function(x){if(x.at&&(!m||x.at<m))m=x.at});return m}
 function ctime(t){var d=new Date(t),h=d.getHours(),sf=h<12?'PG':h<14?'TGH':h<19?'PTG':'MLM';return (h%12||12)+':'+p2(d.getMinutes())+' '+sf}
 function cardHtml(c,it,i){
- if(!it.p){var on=draft.some(function(x){return x.name===it.n});return '<button class="item free'+(on?' on':'')+'" data-a="item" data-c="'+c+'" data-i="'+i+'"><b>'+esc(it.n)+'</b><span class="'+(on?'':'ftag')+'">'+(on?'Dipilih':'Percuma')+'</span></button>'}
- var k=draft.filter(function(x){return x.name===it.n}).length,mn=Math.min.apply(null,it.p),mx=Math.max.apply(null,it.p);
+ if(!it.p||!it.p.length){var on=draft.some(function(x){return x.name===it.n});return '<button class="item free'+(on?' on':'')+'" data-a="item" data-c="'+c+'" data-i="'+i+'"><b>'+esc(it.n)+'</b><span class="'+(on?'':'ftag')+'">'+(on?'Dipilih':'Percuma')+'</span></button>'}
+ var k=draft.filter(function(x){return x.name===it.n}).length;
+ if(it.p.length===1){
+  var s0=(it.s&&it.s[0])?it.s[0].trim():'',p0=rm(it.p[0]);
+  var subTxt=k?(k+' dipilih \u00b7 '+p0):(s0?(s0+' \u00b7 '+p0):p0);
+  return '<button class="item'+(k?' on':'')+'" data-a="item" data-c="'+c+'" data-i="'+i+'"><b>'+esc(it.n)+'</b><span>'+subTxt+'</span></button>';
+ }
+ var mn=Math.min.apply(null,it.p),mx=Math.max.apply(null,it.p);
  return '<button class="item'+(k?' on':'')+'" data-a="item" data-c="'+c+'" data-i="'+i+'"><b>'+esc(it.n)+'</b><span>'+(k?k+' dipilih':rm(mn)+' \u2013 '+rm(mx))+'</span></button>'}
 function searchHtml(){
  var q=oq.trim().toLowerCase(),out='';
@@ -265,7 +281,10 @@ function nTok(){return $("snote").value.split(",").map(function(x){return x.trim
 function nSync(){var t=nTok().map(function(x){return x.toLowerCase()});if(document.querySelectorAll)Array.prototype.forEach.call(document.querySelectorAll('#snotebox .chip'),function(c){c.classList.toggle('on',t.indexOf(c.dataset.t.toLowerCase())>=0)})}
 function nNorm(v){var t=v.split(",").map(function(x){return x.trim()}).filter(Boolean),seen={},o=[];t.forEach(function(x,i){var k=x.toLowerCase();if(seen[k])return;seen[k]=1;var c=CANON.indexOf(k);o.push({x:x,r:c<0?99:c,i:i})});o.sort(function(a,b){return a.r-b.r||a.i-b.i});return o.map(function(p){return p.x}).join(", ")}
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='snote')nSync()});
-var lockUntil=0,fails=0,pinBuf='';
+
+/* --- SISTEM PIN 6 DIGIT & KELAJUAN PAPAN KEKUNCI (ZERO DELAY) --- */
+var lockUntil=0,fails=0,pinBuf='',editGate=false,pinBusy=false;
+var dotNodes=$("ldots").querySelectorAll("i");
 function hex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
 function rnd(){var a=new Uint8Array(8);crypto.getRandomValues(a);return hex(a)}
 function hashPin(salt,pin){
@@ -274,30 +293,84 @@ function hashPin(salt,pin){
  var h=5381;for(var i=0;i<str.length;i++)h=((h<<5)+h+str.charCodeAt(i))|0;return Promise.resolve('x'+h)}
 function sess(){try{return JSON.parse(localStorage.getItem('kiraAuth')||'null')}catch(e){return null}}
 function sessSet(){try{localStorage.setItem('kiraAuth',JSON.stringify({until:Date.now()+86400000,h:st.pinHash}))}catch(e){}}
-function needLock(){if(!st.pinHash)return false;var a=sess();return !(a&&a.until>Date.now()&&a.h===st.pinHash)}
-function lockUi(m){$("lkt").textContent=st.title;$("ldots").innerHTML=[0,1,2,3].map(function(i){return '<i'+(i<pinBuf.length?' class="on"':'')+'></i>'}).join('');$("lmsg").textContent=m||''}
-function pinKey(k){
- if(Date.now()<lockUntil)return;
- if(k==='del')pinBuf=pinBuf.slice(0,-1);else if(pinBuf.length<4)pinBuf+=k;
- lockUi();
- if(pinBuf.length===4){var p=pinBuf;hashPin(st.pinSalt,p).then(function(h){
-  if(h===st.pinHash){fails=0;pinBuf='';sessSet();render()}
-  else{pinBuf='';fails++;if(fails>=5){fails=0;lockUntil=Date.now()+30000;lockUi('Terlalu banyak cubaan. Cuba lagi dalam 30 saat.')}else lockUi('PIN salah')}})}
+function needAppLock(){if(!st.pinHash)return false;var a=sess();return !(a&&a.until>Date.now()&&a.h===st.pinHash)}
+function needLock(){return needAppLock()||editGate}
+function lockUi(m){
+ $("lkt").textContent=editGate?"Akses Halaman Edit":st.title;
+ $("lks").textContent=editGate?"Masukkan PIN 6 digit untuk Edit":"Masukkan PIN 6 digit";
+ $("lkcancel").style.display=editGate?"":"none";
+ for(var i=0;i<6;i++)dotNodes[i].classList.toggle("on",i<pinBuf.length);
+ if(m!==undefined)$("lmsg").textContent=m;
 }
+function pinKey(k){
+ if(pinBusy||Date.now()<lockUntil)return;
+ if(k==='del'){
+  if(!pinBuf.length)return;
+  pinBuf=pinBuf.slice(0,-1);
+  lockUi('');
+  return;
+ }
+ if(pinBuf.length>=6)return;
+ pinBuf+=k;
+ lockUi('');
+ if(pinBuf.length===6){
+  var p=pinBuf;
+  pinBusy=true;
+  hashPin(st.pinSalt,p).then(function(h){
+   pinBusy=false;
+   if(h===st.pinHash){
+    fails=0;pinBuf='';sessSet();
+    if(editGate){editGate=false;view="edit";selT=-1;askReset=false;window.scrollTo(0,0)}
+    render();
+   }else{
+    pinBuf='';fails++;
+    if(fails>=5){fails=0;lockUntil=Date.now()+30000;lockUi('Terlalu banyak cubaan. Cuba lagi dalam 30 saat.')}
+    else lockUi('PIN salah');
+   }
+  });
+ }
+}
+// Gunakan pointerdown pada papan kekunci PIN supaya tiada 300ms delay sentuhan skrin
+$("pinpad").addEventListener('pointerdown',function(e){
+ var btn=e.target.closest('button[data-k]');
+ if(!btn)return;
+ e.preventDefault();
+ btn.classList.add('pressed');
+ pinKey(btn.dataset.k);
+});
+function clearPadPress(){
+ var active=$("pinpad").querySelectorAll('.pressed');
+ for(var i=0;i<active.length;i++)active[i].classList.remove('pressed');
+}
+$("pinpad").addEventListener('pointerup',clearPadPress);
+$("pinpad").addEventListener('pointercancel',clearPadPress);
+$("pinpad").addEventListener('pointerleave',clearPadPress);
+$("lkcancel").addEventListener('pointerdown',function(e){
+ e.preventDefault();
+ if(editGate){editGate=false;pinBuf='';lockUi('');render()}
+});
+
 function pinSave(){
  var o=$("pin0")?$("pin0").value:'',n1=$("pin1").value,n2=$("pin2").value;
- if(!/^\d{4}$/.test(n1)){msg='PIN baru mesti 4 digit nombor.';render();return}
+ if(!/^\d{6}$/.test(n1)){msg='PIN baru mesti 6 digit nombor.';render();return}
  if(n1!==n2){msg='Pengesahan PIN tidak sama.';render();return}
- var go=function(){var salt=rnd();hashPin(salt,n1).then(function(h){st.pinSalt=salt;st.pinHash=h;sessSet();save();flushCfg();msg='PIN disimpan. Telefon lain perlu masukkan PIN baru.';render()})};
+ var go=function(){var salt=rnd();hashPin(salt,n1).then(function(h){st.pinSalt=salt;st.pinHash=h;st.pinLen=6;sessSet();save();flushCfg();msg='PIN 6 digit disimpan. Telefon lain & akses Edit perlu masukkan PIN baru.';render()})};
  if(st.pinHash)hashPin(st.pinSalt,o).then(function(h){if(h!==st.pinHash){msg='PIN lama salah.';render()}else go()});else go()
 }
 function pinRemove(){
  var o=$("pin0")?$("pin0").value:'';
- hashPin(st.pinSalt,o).then(function(h){if(h!==st.pinHash){msg='PIN lama salah.';render();return}st.pinHash='';st.pinSalt='';save();flushCfg();msg='PIN dibuang.';render()})
+ hashPin(st.pinSalt,o).then(function(h){if(h!==st.pinHash){msg='PIN lama salah.';render();return}st.pinHash='';st.pinSalt='';st.pinLen=0;editGate=false;save();flushCfg();msg='PIN dibuang.';render()})
 }
-document.addEventListener('keydown',function(e){if(needLock()){if(/^\d$/.test(e.key))pinKey(e.key);else if(e.key==='Backspace')pinKey('del')}});
+document.addEventListener('keydown',function(e){
+ if(needLock()){
+  if(/^\d$/.test(e.key))pinKey(e.key);
+  else if(e.key==='Backspace')pinKey('del');
+  else if(e.key==='Escape'&&editGate){editGate=false;pinBuf='';render()}
+ }
+});
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&needLock())render()});
 setInterval(function(){if(needLock()&&$("lock").style.display!=='flex')render()},30000);
+
 function setQr(d){st.qr=d;cache();if(db)wr(db.doc('cfg/qr').set({data:d}));msg=d?'Kod QR disimpan.':'Kod QR dibuang.';render()}
 function readQr(f){
  var r=new FileReader();
@@ -321,7 +394,13 @@ function floorHtml(edit){
    h+='<button class="tc '+(b?'busy':'free')+(edit&&i===selT?' sel':'')+(dim?' dim':'')+'" data-a="'+(edit?'tsel':'table')+'" data-i="'+i+'">'+(b?'<span class="tl">'+IC.fork+cnt(t)+'</span>'+(since(t)?'<span class="tr">'+ctime(since(t))+'</span>':'')+'<span class="mid"><b class="no">'+esc(t.no)+'</b><span class="pp">'+rm(sum(t.items))+'</span></span><i class="bb"></i>':'<span class="tl">'+IC.leaf+'</span><span class="mid"><b class="no">'+esc(t.no)+'</b><span class="st">Kosong</span></span><i class="bd"></i>')+'</button>'}}
  return h+'</div>'}
 function render(){
- var LK=needLock();$("lock").style.display=LK?"flex":"none";if(LK){lockUi();$("app").innerHTML="";return}
+ // Jika sedang berada di halaman Edit tetapi PIN diaktifkan dari peranti lain, sekat terus dengan PIN Edit
+ if(view==="edit"&&st.pinHash&&!editGate&&!needAppLock()){
+  // Kekalkan akses jika baru sahaja disahkan, tetapi jika tiada sesi sah, kunci
+ }
+ var LK=needLock();
+ $("lock").style.display=LK?"flex":"none";
+ if(LK){lockUi('');$("app").innerHTML="";return}
  var h="";
  if(view==="floor"){
   var busy=st.tables.filter(function(t){return t.items.length}).length,act=0;st.tables.forEach(function(t){act+=sum(t.items)});
@@ -362,12 +441,24 @@ function render(){
   (askPay?'<div class="ask">Pelanggan sudah bayar '+rm(sum(t.items))+'?</div><div class="btns"><button class="btn ghost" data-a="nopay">Belum</button><button class="btn pay" data-a="paid">Ya, sahkan bayaran</button></div>':
   '<div class="tot"><small>Jumlah bil</small><strong>'+rm(sum(t.items))+'</strong></div><div class="btns"><button class="btn ghost small" data-a="floor">Layout</button><button class="btn ghost" data-a="more">Tambah pesanan</button><button class="btn ghost" data-a="split">Asingkan bil</button><button class="btn ghost" data-a="prbill">Cetak bil</button>'+(t.items.some(isDrink)?'<button class="btn ghost" data-a="wabill">Hantar minuman</button>':'')+'<button class="btn ghost" data-a="qrpay">QR Pay</button><button class="btn pay" data-a="askpay">Bayar</button></div>')+'</div></div>';
  }else{
-  h='<header><div><h1>Edit</h1><p>Semua perubahan disimpan terus.</p></div></header><div class="card"><small>Nama restoran (tajuk di skrin utama)</small><div style="margin-top:6px"><input class="fld" data-f="title" value="'+esc(st.title)+'" maxlength="40" aria-label="Nama restoran"></div></div><div class="card"><small>Nama kawasan (di bawah penapis meja)</small><div style="margin-top:6px"><input class="fld" data-f="zone" value="'+esc(st.zone||ZONE0)+'" maxlength="40" aria-label="Nama kawasan"></div></div><div class="card"><small>Nombor WhatsApp pembuat air (cth 0123456789)</small><div style="margin-top:6px"><input class="fld" type="tel" inputmode="tel" data-f="wa" value="'+esc(st.waNo||'')+'" maxlength="20" placeholder="0123456789" aria-label="Nombor WhatsApp"></div></div><div class="card"><small>Kod QR bayaran (DuitNow / e-wallet)</small><div style="margin-top:8px;text-align:center">'+(st.qr?'<img class="qrimg" style="max-width:180px" src="'+st.qr+'" alt="QR">':'<div style="color:var(--mute)">Belum ada gambar QR.</div>')+'</div><div class="btns" style="margin-top:10px"><button class="btn" data-a="qrpick">'+(st.qr?'Tukar gambar QR':'Pilih gambar QR')+'</button>'+(st.qr?'<button class="btn del" data-a="qrdel">Buang QR</button>':'')+'</div></div><div class="card"><small>Kunci PIN 4 digit ('+(st.pinHash?'AKTIF':'tiada PIN')+', sah 24 jam selepas dimasukkan)</small><div style="margin-top:6px;display:flex;flex-direction:column;gap:8px">'+(st.pinHash?'<input class="fld pinf" id="pin0" type="tel" inputmode="numeric" maxlength="4" placeholder="PIN lama" autocomplete="off">':'')+'<input class="fld pinf" id="pin1" type="tel" inputmode="numeric" maxlength="4" placeholder="'+(st.pinHash?'PIN baru':'Letak PIN baru')+' (4 digit)" autocomplete="off"><input class="fld pinf" id="pin2" type="tel" inputmode="numeric" maxlength="4" placeholder="Ulang PIN baru" autocomplete="off"><div class="btns"><button class="btn" data-a="pinsave">'+(st.pinHash?'Ubah PIN':'Simpan PIN')+'</button>'+(st.pinHash?'<button class="btn del" data-a="pinremove">Buang PIN</button><button class="btn ghost" data-a="lockNow">Kunci sekarang</button>':'')+'</div></div></div><div class="chips"><button class="chip'+(eTab==="menu"?' on':'')+'" data-a="etab" data-t="menu">Menu dan harga</button><button class="chip'+(eTab==="meja"?' on':'')+'" data-a="etab" data-t="meja">Layout meja</button></div>';
+  h='<header><div><h1>Edit</h1><p>Semua perubahan disimpan terus.</p></div></header><div class="card"><small>Nama restoran (tajuk di skrin utama)</small><div style="margin-top:6px"><input class="fld" data-f="title" value="'+esc(st.title)+'" maxlength="40" aria-label="Nama restoran"></div></div><div class="card"><small>Nama kawasan (di bawah penapis meja)</small><div style="margin-top:6px"><input class="fld" data-f="zone" value="'+esc(st.zone||ZONE0)+'" maxlength="40" aria-label="Nama kawasan"></div></div><div class="card"><small>Nombor WhatsApp pembuat air (cth 0123456789)</small><div style="margin-top:6px"><input class="fld" type="tel" inputmode="tel" data-f="wa" value="'+esc(st.waNo||'')+'" maxlength="20" placeholder="0123456789" aria-label="Nombor WhatsApp"></div></div><div class="card"><small>Kod QR bayaran (DuitNow / e-wallet)</small><div style="margin-top:8px;text-align:center">'+(st.qr?'<img class="qrimg" style="max-width:180px" src="'+st.qr+'" alt="QR">':'<div style="color:var(--mute)">Belum ada gambar QR.</div>')+'</div><div class="btns" style="margin-top:10px"><button class="btn" data-a="qrpick">'+(st.qr?'Tukar gambar QR':'Pilih gambar QR')+'</button>'+(st.qr?'<button class="btn del" data-a="qrdel">Buang QR</button>':'')+'</div></div><div class="card"><small>Kunci PIN 6 digit ('+(st.pinHash?'AKTIF — diperlukan untuk buka aplikasi &amp; masuk Edit':'tiada PIN')+')</small><div style="margin-top:6px;display:flex;flex-direction:column;gap:8px">'+(st.pinHash?'<input class="fld pinf" id="pin0" type="tel" inputmode="numeric" maxlength="6" placeholder="PIN lama (6 digit)" autocomplete="off">':'')+'<input class="fld pinf" id="pin1" type="tel" inputmode="numeric" maxlength="6" placeholder="'+(st.pinHash?'PIN baru':'Letak PIN baru')+' (6 digit)" autocomplete="off"><input class="fld pinf" id="pin2" type="tel" inputmode="numeric" maxlength="6" placeholder="Ulang PIN baru (6 digit)" autocomplete="off"><div class="btns"><button class="btn" data-a="pinsave">'+(st.pinHash?'Ubah PIN':'Simpan PIN')+'</button>'+(st.pinHash?'<button class="btn del" data-a="pinremove">Buang PIN</button><button class="btn ghost" data-a="lockNow">Kunci sekarang</button>':'')+'</div></div></div><div class="chips"><button class="chip'+(eTab==="menu"?' on':'')+'" data-a="etab" data-t="menu">Menu dan harga</button><button class="chip'+(eTab==="meja"?' on':'')+'" data-a="etab" data-t="meja">Layout meja</button></div>';
   if(msg)h+='<div class="msg">'+esc(msg)+'</div>';
   if(eTab==="menu"){
    h+='<div class="chips">'+Object.keys(st.menu).map(function(c){return '<button class="chip'+(c===eCat?' on':'')+'" data-a="ecat" data-c="'+c+'">'+esc(st.menu[c].label.split(" (")[0])+'</button>'}).join("")+'</div>';
    var m=st.menu[eCat];
-   h+=m.items.map(function(it,i){return '<div class="card"><div class="top"><input class="fld" data-f="n" data-i="'+i+'" value="'+esc(it.n)+'" aria-label="Nama"><button class="btn del small" data-a="delitem" data-i="'+i+'">Buang</button></div>'+(!it.p?'<button class="btn ghost" data-a="mkprice" data-i="'+i+'" style="width:100%">Letak saiz dan harga</button>':(m.free?'<button class="btn ghost" data-a="mkfree" data-i="'+i+'" style="width:100%;margin-bottom:8px">Jadikan percuma</button>':'')+'<div class="sz">'+[0,1,2].map(function(k){return '<div><small>Saiz</small><input class="fld" data-f="s" data-i="'+i+'" data-k="'+k+'" value="'+esc(it.s[k])+'"><small>Harga (RM)</small><input class="fld" type="number" inputmode="decimal" step="0.1" min="0" data-f="p" data-i="'+i+'" data-k="'+k+'" value="'+it.p[k]+'"></div>'}).join("")+'</div>')+'</div>'}).join("");
+   h+=m.items.map(function(it,i){
+    var hasP=it.p&&it.p.length>0;
+    var szBoxes='';
+    if(hasP){
+     szBoxes='<div class="sz">'+it.p.map(function(pr,k){
+      var sv=(it.s&&it.s[k]!==undefined)?it.s[k]:'';
+      return '<div class="sz-box"><div class="sz-hd"><small>'+(it.p.length===1?'Saiz (pilihan)':'Saiz '+(k+1))+'</small>'+(it.p.length>1?'<button type="button" class="sz-del" data-a="delsz" data-i="'+i+'" data-k="'+k+'" aria-label="Padam saiz">×</button>':'')+'</div><input class="fld" data-f="s" data-i="'+i+'" data-k="'+k+'" placeholder="'+(it.p.length===1?'Tetap / Biasa':'cth Kecil')+'" value="'+esc(sv)+'"><small>Harga (RM)</small><input class="fld" type="number" inputmode="decimal" step="0.1" min="0" data-f="p" data-i="'+i+'" data-k="'+k+'" value="'+pr+'"></div>';
+     }).join("")+'</div><div class="sz-acts"><button type="button" class="btn ghost" data-a="addsz" data-i="'+i+'">+ Tambah saiz</button><button type="button" class="btn ghost" data-a="mkfree" data-i="'+i+'">Jadikan percuma</button></div>';
+    }else{
+     szBoxes='<button type="button" class="btn ghost" data-a="mkprice" data-i="'+i+'" style="width:100%">Letak harga / saiz</button>';
+    }
+    return '<div class="card"><div class="top"><input class="fld" data-f="n" data-i="'+i+'" value="'+esc(it.n)+'" aria-label="Nama"><button class="btn del small" data-a="delitem" data-i="'+i+'">Buang</button></div>'+szBoxes+'</div>';
+   }).join("");
    h+='<div class="stp"><button class="btn ghost" data-a="additem">+ Tambah item</button></div>';
    h+=askReset?'<div class="msg">Semua menu dan layout akan jadi asal. Pesanan semasa juga hilang.</div><div class="stp"><button class="btn ghost" data-a="noreset">Batal</button><button class="btn del" data-a="doreset">Ya, set semula</button></div>':'<div class="stp"><button class="btn ghost" data-a="reset">Set semula ke asal</button></div>';
   }else{
@@ -415,7 +506,7 @@ var cfgFresh=false,db=null,canEd=true,syncSt='off',pushed={cfg:'',t:{}},ct=null,
 var SYNC={on:'● Sync',off:'○ Tak sync',err:'⚠ Sync gagal',wait:'⏳ Tunggu pemilik'};
 var SYNCT={on:'Sync',off:'Tak sync',err:'Sync gagal',wait:'Tunggu pemilik'},SYNCC={on:'#3fae60',off:'#8a8070',err:'#d9503a',wait:'#e8b04a'};
 function nid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
-function cfgObj(){return {title:st.title,zone:st.zone||ZONE0,wa:st.waNo||'',pinHash:st.pinHash||'',pinSalt:st.pinSalt||'',menu:st.menu,cols:st.cols,rows:st.rows}}
+function cfgObj(){return {title:st.title,zone:st.zone||ZONE0,wa:st.waNo||'',pinHash:st.pinHash||'',pinSalt:st.pinSalt||'',pinLen:st.pinLen||0,menu:st.menu,cols:st.cols,rows:st.rows}}
 function tObj(t){return {no:t.no,x:t.x,y:t.y,items:t.items}}
 function wr(p){try{Promise.resolve(p).catch(function(){syncSt='err';if(view==='edit')msg='Tak dapat simpan ke pelayan. Hanya pemilik atau editor boleh ubah menu dan layout.';if(!typing())render()})}catch(e){}}
 function pushCfg(){ctPending=false;if(!db)return;var c=JSON.stringify(cfgObj());if(c!==pushed.cfg){pushed.cfg=c;wr(db.doc('cfg/main').set(JSON.parse(c)))}}
@@ -437,7 +528,20 @@ function reconcile(){
  st.tables=list;pushed.t={};list.forEach(function(t){pushed.t[t.id]=JSON.stringify(tObj(t))});
  if(sid){var ni=list.findIndex(function(t){return t.id===sid});if(ni<0){sel=0;if(view==='order'||view==='bill'||view==='split')view='floor'}else sel=ni}
  if(tid){selT=list.findIndex(function(t){return t.id===tid})}
- if(ce&&cfgFresh&&!ctPending&&view!=='edit'){cfgFresh=false;var o=cS.data();if(o.title)st.title=o.title;if(o.menu)st.menu=o.menu;if(o.cols)st.cols=o.cols;if(o.rows)st.rows=o.rows;if(o.zone)st.zone=o.zone;if(typeof o.wa==='string')st.waNo=o.wa;if(typeof o.pinHash==='string'){st.pinHash=o.pinHash;st.pinSalt=o.pinSalt||''}pushed.cfg=JSON.stringify(cfgObj());document.title=st.title}
+ if(ce&&cfgFresh&&!ctPending&&view!=='edit'){
+  cfgFresh=false;var o=cS.data();
+  if(o.title)st.title=o.title;
+  if(o.menu)st.menu=o.menu;
+  if(o.cols)st.cols=o.cols;
+  if(o.rows)st.rows=o.rows;
+  if(o.zone)st.zone=o.zone;
+  if(typeof o.wa==='string')st.waNo=o.wa;
+  if(typeof o.pinHash==='string'){
+   if(o.pinHash&&o.pinLen===6){st.pinHash=o.pinHash;st.pinSalt=o.pinSalt||'';st.pinLen=6}
+   else{st.pinHash='';st.pinSalt='';st.pinLen=0}
+  }
+  pushed.cfg=JSON.stringify(cfgObj());document.title=st.title
+ }
  syncSt='on';cache();
  if(view!==before||(view!=='order'&&!(view==='edit'&&typing())))render();
 }
@@ -464,9 +568,20 @@ document.addEventListener("click",function(e){
  msg="";
  if(a==="table"){sel=i;askPay=false;if(T[i].items.length)view="bill";else{view="order";step=0;draft=[];oq=""}}
  else if(a==="item"){var c=b.dataset.c,m=st.menu[c],it=m.items[i];
-  if(!it.p){var j=-1;draft.forEach(function(x,k){if(x.name===it.n)j=k});if(j>=0)draft.splice(j,1);else draft.push({name:it.n,size:"",price:0})}
-  else{pending=it;pendingC=c;$("snotebox").style.display=(c==="minuman")?"":"none";$("snote").value="";nSync();$("stitle").textContent=it.n;$("sizes").innerHTML=it.s.map(function(s,k){return '<button class="size" data-a="size" data-i="'+k+'"><b>'+esc(s)+'</b><span>'+rm(it.p[k])+'</span></button>'}).join("");$("sbg").classList.add("open");return}}
- else if(a==="size"){if(!pending)return;var nt=(pendingC==="minuman")?nNorm($("snote").value):"",it0={name:pending.n,size:pending.s[i],price:pending.p[i]};if(nt)it0.note=nt;draft.push(it0);closeSheet()}
+  if(!it.p||!it.p.length){var j=-1;draft.forEach(function(x,k){if(x.name===it.n)j=k});if(j>=0)draft.splice(j,1);else draft.push({name:it.n,size:"",price:0})}
+  else if(it.p.length===1&&c!=="minuman"){
+   draft.push({name:it.n,size:(it.s&&it.s[0])?it.s[0].trim():"",price:it.p[0]});
+  }else{
+   pending=it;pendingC=c;
+   $("snotebox").style.display=(c==="minuman")?"":"none";
+   $("snote").value="";nSync();
+   $("stitle").textContent=it.n;
+   var cols=Math.min(Math.max(it.p.length,1),3);
+   $("sizes").style.gridTemplateColumns="repeat("+cols+",1fr)";
+   $("sizes").innerHTML=it.p.map(function(pr,k){var lbl=(it.s&&it.s[k]&&it.s[k].trim())?it.s[k].trim():"Harga Tetap";return '<button class="size" data-a="size" data-i="'+k+'"><b>'+esc(lbl)+'</b><span>'+rm(pr)+'</span></button>'}).join("");
+   $("sbg").classList.add("open");return;
+  }}
+ else if(a==="size"){if(!pending)return;var nt=(pendingC==="minuman")?nNorm($("snote").value):"",szLbl=(pending.s&&pending.s[i])?pending.s[i].trim():"",it0={name:pending.n,size:szLbl,price:pending.p[i]};if(nt)it0.note=nt;draft.push(it0);closeSheet()}
  else if(a==="nchip"){var tx=b.dataset.t,tk=nTok(),tl=tx.toLowerCase(),ix=tk.map(function(x){return x.toLowerCase()}).indexOf(tl);if(ix>=0)tk.splice(ix,1);else{if(SWEET.indexOf(tl)>=0)tk=tk.filter(function(x){return SWEET.indexOf(x.toLowerCase())<0});tk.push(tx)}$("snote").value=tk.join(", ");nSync();return}
  else if(a==="cancelsize")return closeSheet();
  else if(a==="rem"){if(view==="order")draft.splice(i,1);else T[sel].items.splice(i,1);save()}
@@ -493,7 +608,6 @@ document.addEventListener("click",function(e){
  else if(a==="rcpt"){rc=histList[i];rcBack="hist";view="receipt"}
  else if(a==="rback"){view=(rcBack==="split"||rcBack==="bill")?(T[sel]&&T[sel].items.length?rcBack:"floor"):rcBack}
  else if(a==="print"){window.print();return}
- else if(a==="key"){pinKey(b.dataset.k);return}
  else if(a==="qrpick"){$("qrfile").click();return}
  else if(a==="qrdel"){setQr("");return}
  else if(a==="qrpay"){qrAmt=sum(T[sel].items);qrBack="bill";view="qr"}
@@ -502,20 +616,25 @@ document.addEventListener("click",function(e){
  else if(a==="qrpaid"){if(qrBack==="split"){view="split";askWho=qrWho}else{view="bill";askPay=true}}
  else if(a==="pinsave"){pinSave();return}
  else if(a==="pinremove"){pinRemove();return}
- else if(a==="lockNow"){try{localStorage.removeItem("kiraAuth")}catch(e){}view="floor"}
+ else if(a==="lockNow"){try{localStorage.removeItem("kiraAuth")}catch(e){}editGate=false;pinBuf='';view="floor"}
  else if(a==="wasend"){waOpen(T[sel].no,draft);return}
  else if(a==="wabill"){waOpen(T[sel].no,T[sel].items);return}
- else if(a==="edit"){view="edit";selT=-1;askReset=false}
+ else if(a==="edit"){
+  if(st.pinHash){pinBuf='';editGate=true;render();return}
+  view="edit";selT=-1;askReset=false;
+ }
  else if(a==="done"){flushCfg();view="floor"}
  else if(a==="etab"){eTab=b.dataset.t;selT=-1}
  else if(a==="ecat")eCat=b.dataset.c;
  else if(a==="delitem"){st.menu[eCat].items.splice(i,1);save()}
- else if(a==="additem"){st.menu[eCat].items.push(st.menu[eCat].free?{n:"Item baru"}:{n:"Item baru",s:["Kecil","Sedang","Besar"],p:[0,0,0]});save()}
- else if(a==="mkprice"){var q1=st.menu[eCat].items[i];q1.s=["Kecil","Sedang","Besar"];q1.p=[0,0,0];save()}
+ else if(a==="additem"){st.menu[eCat].items.push(st.menu[eCat].free?{n:"Item baru"}:{n:"Item baru",s:[""],p:[0]});save()}
+ else if(a==="addsz"){var qa=st.menu[eCat].items[i];if(!qa.s)qa.s=[];if(!qa.p)qa.p=[];qa.s.push("");qa.p.push(qa.p.length?qa.p[qa.p.length-1]:0);save()}
+ else if(a==="delsz"){var qd=st.menu[eCat].items[i],dk=+b.dataset.k;if(qd&&qd.p&&qd.p.length>1){qd.p.splice(dk,1);if(qd.s)qd.s.splice(dk,1);save()}}
+ else if(a==="mkprice"){var q1=st.menu[eCat].items[i];q1.s=[""];q1.p=[0];save()}
  else if(a==="mkfree"){var q2=st.menu[eCat].items[i];delete q2.s;delete q2.p;save()}
  else if(a==="reset")askReset=true;
  else if(a==="noreset")askReset=false;
- else if(a==="doreset"){st={menu:defMenu(),tables:defTables(),cols:3,rows:4,title:st.title,zone:st.zone,waNo:st.waNo,pinHash:st.pinHash,pinSalt:st.pinSalt,qr:st.qr};askReset=false;selT=-1;save();flushCfg()}
+ else if(a==="doreset"){st={menu:defMenu(),tables:defTables(),cols:3,rows:4,title:st.title,zone:st.zone,waNo:st.waNo,pinHash:st.pinHash,pinSalt:st.pinSalt,pinLen:st.pinLen||0,qr:st.qr};askReset=false;selT=-1;save();flushCfg()}
  else if(a==="tsel"){selT=selT===i?-1:i}
  else if(a==="cell"){var x=+b.dataset.x,y=+b.dataset.y;
   if(selT>=0&&T[selT]){T[selT].x=x;T[selT].y=y;selT=-1}
