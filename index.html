@@ -160,6 +160,7 @@ html.lt{filter:invert(1) hue-rotate(180deg)}html.lt img,html.lt #rcpt{filter:inv
 .tc .dr{position:absolute;left:8px;bottom:8px;background:#e8b04a;color:#2a1d0a;border-radius:8px;padding:1px 7px;font-size:.68rem;font-weight:700}
 .btn.pulse{animation:bpu 1.8s infinite}@keyframes bpu{50%{box-shadow:0 0 0 6px rgba(217,169,91,.4)}}
 .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:8px 6px;font-size:1.3rem;color:var(--mute);line-height:1}.card.drg{opacity:.5;outline:2px dashed var(--leaf)}.card.over{box-shadow:0 -5px 0 var(--leaf)}
+.sz-box.drg{opacity:.5;outline:2px dashed var(--leaf)}.sz-box.over{box-shadow:-5px 0 0 var(--leaf)}
 .tc.old{border-color:#ffd24a;animation:pl 1.6s infinite}@keyframes pl{50%{box-shadow:inset 0 0 0 4px #ffd24a}}
 @media print{html.lt,html.lt img,html.lt #rcpt{filter:none}.bar,header,.sheet-bg{display:none!important}body{background:#fff;padding:0;max-width:none}.rcw{padding:0}#rcpt{border:0;max-width:none;padding:0}}
 </style>
@@ -459,7 +460,7 @@ function render(){syncSteps();
     if(hasP){
      szBoxes='<div class="sz">'+it.p.map(function(pr,k){
       var sv=(it.s&&it.s[k]!==undefined)?it.s[k]:'';
-      return '<div class="sz-box"><div class="sz-hd"><small>'+(it.p.length===1?'Saiz (pilihan)':'Saiz '+(k+1))+'</small>'+(it.p.length>1?'<button type="button" class="sz-del" data-a="delsz" data-i="'+i+'" data-k="'+k+'" aria-label="Padam saiz">×</button>':'')+'</div><input class="fld" data-f="s" data-i="'+i+'" data-k="'+k+'" placeholder="'+(it.p.length===1?'Tetap / Biasa':'cth Kecil')+'" value="'+esc(sv)+'"><small>Harga (RM)</small><input class="fld" type="number" inputmode="decimal" step="0.1" min="0" data-f="p" data-i="'+i+'" data-k="'+k+'" value="'+pr+'"></div>';
+      return '<div class="sz-box" data-si="'+k+'" data-ii="'+i+'"><div class="sz-hd"><span style="display:flex;align-items:center;gap:2px"><span class="dh" data-dhs aria-label="Seret saiz" style="padding:2px 4px;font-size:1.1rem">\u283F</span><small>'+(it.p.length===1?'Saiz (pilihan)':'Saiz '+(k+1))+'</small></span>'+(it.p.length>1?'<button type="button" class="sz-del" data-a="delsz" data-i="'+i+'" data-k="'+k+'" aria-label="Padam saiz">×</button>':'')+'</div><input class="fld" data-f="s" data-i="'+i+'" data-k="'+k+'" placeholder="'+(it.p.length===1?'Tetap / Biasa':'cth Kecil')+'" value="'+esc(sv)+'"><small>Harga (RM)</small><input class="fld" type="number" inputmode="decimal" step="0.1" min="0" data-f="p" data-i="'+i+'" data-k="'+k+'" value="'+pr+'"></div>';
      }).join("")+'</div><div class="sz-acts"><button type="button" class="btn ghost" data-a="addsz" data-i="'+i+'">+ Tambah saiz</button><button type="button" class="btn ghost" data-a="mkfree" data-i="'+i+'">Jadikan percuma</button></div>';
     }else{
      szBoxes='<button type="button" class="btn ghost" data-a="mkprice" data-i="'+i+'" style="width:100%">Letak harga / saiz</button>';
@@ -487,6 +488,11 @@ function fnm(){return 'menu-'+(st.title||'kedai').replace(/[^\w-]+/g,'-')+'-'+ne
 (function(){var D=null;document.addEventListener('pointerdown',function(e){var h=e.target.closest&&e.target.closest('[data-dh]');if(!h)return;var c=h.closest('.card[data-ci]');if(!c)return;e.preventDefault();D={from:+c.dataset.ci,el:c,to:+c.dataset.ci};c.classList.add('drg');try{h.setPointerCapture(e.pointerId)}catch(x){}});
 document.addEventListener('pointermove',function(e){if(!D)return;var t=document.elementFromPoint(e.clientX,e.clientY),c=t&&t.closest&&t.closest('.card[data-ci]');document.querySelectorAll('.card.over').forEach(function(n){n.classList.remove('over')});if(c){D.to=+c.dataset.ci;if(D.to!==D.from)c.classList.add('over')}if(e.clientY<90)window.scrollBy(0,-14);else if(e.clientY>innerHeight-90)window.scrollBy(0,14)});
 function end(e){if(!D)return;var d=D;D=null;d.el.classList.remove('drg');document.querySelectorAll('.card.over').forEach(function(n){n.classList.remove('over')});if(e.type==='pointerup'&&d.to!==d.from){var a=st.menu[eCat].items;a.splice(d.to,0,a.splice(d.from,1)[0]);save();render()}}
+document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end)})();
+(function(){var D=null;function clr(){document.querySelectorAll('.sz-box.over').forEach(function(n){n.classList.remove('over')})}
+document.addEventListener('pointerdown',function(e){var h=e.target.closest&&e.target.closest('[data-dhs]');if(!h)return;var c=h.closest('.sz-box[data-si]');if(!c)return;e.preventDefault();D={ii:+c.dataset.ii,from:+c.dataset.si,to:+c.dataset.si,el:c};c.classList.add('drg');try{h.setPointerCapture(e.pointerId)}catch(x){}});
+document.addEventListener('pointermove',function(e){if(!D)return;var t=document.elementFromPoint(e.clientX,e.clientY),c=t&&t.closest&&t.closest('.sz-box[data-si]');clr();if(c&&+c.dataset.ii===D.ii){D.to=+c.dataset.si;if(D.to!==D.from)c.classList.add('over')}if(e.clientY<90)window.scrollBy(0,-14);else if(e.clientY>innerHeight-90)window.scrollBy(0,14)});
+function end(e){if(!D)return;var d=D;D=null;d.el.classList.remove('drg');clr();if(e.type==='pointerup'&&d.to!==d.from){var q=st.menu[eCat].items[d.ii];if(q&&q.p){if(!q.s)q.s=[];while(q.s.length<q.p.length)q.s.push("");q.p.splice(d.to,0,q.p.splice(d.from,1)[0]);q.s.splice(d.to,0,q.s.splice(d.from,1)[0]);save();render()}}}
 document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end)})();
 var qty=1,askLeave=false,drafts={},litMode=false;try{drafts=JSON.parse(localStorage.getItem('kiraDraft')||'{}')}catch(e){}try{litMode=localStorage.getItem('kiraTheme')==='1'}catch(e){}document.documentElement.classList.toggle('lt',litMode);
 function favOrd(a){var fv=st.fav||{};return a.map(function(it,i){return [it,i]}).sort(function(x,y){return (fv[y[0].n]||0)-(fv[x[0].n]||0)||x[1]-y[1]})}
