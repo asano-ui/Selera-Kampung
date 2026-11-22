@@ -168,6 +168,7 @@ html.lt{filter:invert(1) hue-rotate(180deg)}html.lt img,html.lt #rcpt{filter:inv
 <body>
 <div id="app"></div>
 <input type="file" id="qrfile" accept="image/*" style="display:none">
+<input type="file" id="menufile" accept=".json,application/json" style="display:none">
 <div id="lock"><div class="lk"><div class="lkt" id="lkt"></div><div class="lks" id="lks">Masukkan PIN 6 digit</div><div class="dots" id="ldots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lkm" id="lmsg"></div><div class="pad" id="pinpad"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><span></span><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="Padam">⌫</button></div><button type="button" class="lkcancel" id="lkcancel" style="display:none">Batal</button></div></div>
 <div class="sheet-bg" id="sbg"><div class="sheet"><h3 id="stitle"></h3><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="flex:1;color:var(--mute)">Kuantiti</span><button class="btn ghost small" data-a="qm" style="padding:8px 16px;font-size:1.2rem">−</button><b id="qn" style="min-width:24px;text-align:center;font-size:1.2rem">1</b><button class="btn ghost small" data-a="qp" style="padding:8px 16px;font-size:1.2rem">+</button></div><div id="snotebox" style="display:none;margin-bottom:12px"><div id="pkrow" style="margin-bottom:8px"><button class="chip" id="pkb" data-a="pktog" style="width:100%"></button></div><input class="fld" id="snote" placeholder="Catatan (cth kurang manis)" maxlength="40" autocomplete="off"><div class="chips" style="padding:8px 0 0;flex-wrap:wrap"><button class="chip" data-a="nchip" data-t="Kosong">Kosong</button><button class="chip" data-a="nchip" data-t="Kurang Manis">Kurang Manis</button><button class="chip" data-a="nchip" data-t="Manis">Manis</button><button class="chip" data-a="nchip" data-t="Kurang Ais">Kurang Ais</button></div></div><div class="sizes" id="sizes"></div><button class="cancel" data-a="cancelsize">Batal</button></div></div>
 <script>
@@ -388,6 +389,8 @@ function readQr(f){
   im.src=r.result};
  r.readAsDataURL(f)}
 document.addEventListener('change',function(e){var t=e.target;if(t&&t.id==='qrfile'&&t.files&&t.files[0]){readQr(t.files[0]);t.value=''}});
+function readMenu(f){var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result),m=o&&o.menu?o.menu:o,ks=Object.keys(m||{});if(!ks.length||!m.minuman)throw 0;ks.forEach(function(k){var p=m[k];if(!p||typeof p.label!=='string'||!Array.isArray(p.items))throw 0;p.items.forEach(function(it){if(!it||typeof it.n!=='string')throw 0})});if(!confirm('Ganti semua menu dengan fail ini? Meja dan pesanan tidak diubah.'))return;st.menu=m;eCat=ks[0];msg='Menu dimuat naik: '+ks.length+' halaman.';save();flushCfg();render()}catch(e){msg='Fail menu tidak sah.';render()}};r.readAsText(f)}
+document.addEventListener('change',function(e){var t=e.target;if(t&&t.id==='menufile'&&t.files&&t.files[0]){readMenu(t.files[0]);t.value=''}});
 function gridStyle(){return 'style="grid-template-columns:repeat('+st.cols+',1fr);--fs:'+(st.cols>5?'1.3rem':st.cols>3?'1.8rem':'2.4rem')+'"'}
 function floorHtml(edit){
  var map={};st.tables.forEach(function(t,i){map[t.x+","+t.y]=i});
@@ -465,7 +468,7 @@ function render(){syncSteps();
     return '<div class="card" data-ci="'+i+'"><div class="top"><span class="dh" data-dh aria-label="Seret">\u283F</span><input class="fld" data-f="n" data-i="'+i+'" value="'+esc(it.n)+'" aria-label="Nama"><button class="btn ghost small" data-a="oos" data-i="'+i+'">'+(it.o?'Ada':'Habis')+'</button><button class="btn del small" data-a="delitem" data-i="'+i+'">Buang</button></div>'+szBoxes+'</div>';
    }).join("");
    h+='<div class="stp"><button class="btn ghost" data-a="additem">+ Tambah item</button></div>';
-   h+='<div class="stp"><button class="btn ghost" data-a="dlcsv">Muat turun menu (CSV)</button><button class="btn ghost" data-a="dljson">Muat turun (JSON)</button></div>';
+   h+='<div class="stp"><button class="btn ghost" data-a="dlcsv">Muat turun menu (CSV)</button><button class="btn ghost" data-a="dljson">Muat turun (JSON)</button></div><div class="stp"><button class="btn ghost" data-a="imjson">Muat naik menu (JSON)</button></div>';
    h+=askReset?'<div class="msg">Semua menu dan layout akan jadi asal. Pesanan semasa juga hilang.</div><div class="stp"><button class="btn ghost" data-a="noreset">Batal</button><button class="btn del" data-a="doreset">Ya, set semula</button></div>':'<div class="stp"><button class="btn ghost" data-a="reset">Set semula ke asal</button></div>';
   }else{
    h+='<div class="stp"><span>Kolum: <b>'+st.cols+'</b></span><button data-a="dim" data-d="c-">−</button><button data-a="dim" data-d="c+">+</button></div><div class="stp"><span>Baris: <b>'+st.rows+'</b></span><button data-a="dim" data-d="r-">−</button><button data-a="dim" data-d="r+">+</button></div>';
@@ -478,7 +481,7 @@ function render(){syncSteps();
 }
 function closeSheet(){pending=null;pk=false;$("sbg").classList.remove("open")}
 function mj(t){return t.tk?'Bungkus':'Meja '+esc(t.no)}
-function syncSteps(){STEPS[0].c=Object.keys(st.menu).filter(function(k){return k!=="minuman"})}
+function syncSteps(){var ks=Object.keys(st.menu).filter(function(k){return k!=="minuman"});if(st.menu.minuman)ks.push("minuman");STEPS=ks.map(function(k){return {t:st.menu[k].label.split(" (")[0],c:[k]}});if(step>=STEPS.length)step=STEPS.length-1}
 function dlFile(n,t,x){var b=new Blob([x],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},3000)}
 function menuCsv(){var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'},r=[['Halaman','Item','Saiz','Harga (RM)','Habis'].map(q).join(',')];Object.keys(st.menu).forEach(function(c){var m=st.menu[c];m.items.forEach(function(it){var bs=[m.label,it.n];if(it.p&&it.p.length)it.p.forEach(function(p,k){r.push(bs.concat([(it.s&&it.s[k])||'',(+p).toFixed(2),it.o?'Ya':'']).map(q).join(','))});else r.push(bs.concat(['','Percuma',it.o?'Ya':'']).map(q).join(','))})});return '\ufeff'+r.join('\r\n')}
 function fnm(){return 'menu-'+(st.title||'kedai').replace(/[^\w-]+/g,'-')+'-'+new Date().toISOString().slice(0,10)}
@@ -655,6 +658,7 @@ document.addEventListener("click",function(e){
  else if(a==="delcat"){if(eCat!=="minuman"&&confirm("Buang halaman "+st.menu[eCat].label+" dan semua item di dalamnya?")){delete st.menu[eCat];eCat=Object.keys(st.menu)[0];save()}}
  else if(a==="catl"||a==="catr"){var ks=Object.keys(st.menu),ix=ks.indexOf(eCat),jx=ix+(a==="catr"?1:-1);if(jx>=0&&jx<ks.length){var t0=ks[ix];ks[ix]=ks[jx];ks[jx]=t0;var nm2={};ks.forEach(function(k){nm2[k]=st.menu[k]});st.menu=nm2;save()}}
  else if(a==="dlcsv"){dlFile(fnm()+".csv","text/csv;charset=utf-8",menuCsv());return}
+ else if(a==="imjson"){$("menufile").click();return}
  else if(a==="dljson"){dlFile(fnm()+".json","application/json",JSON.stringify({title:st.title,menu:st.menu},null,1));return}
  else if(a==="cw"){curWho=+b.dataset.k}
  else if(a==="cwm"){splitN=Math.min(10,splitN+1)}
