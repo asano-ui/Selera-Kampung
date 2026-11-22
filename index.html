@@ -159,6 +159,7 @@ h2{font-size:1rem;margin:14px 16px 8px}
 html.lt{filter:invert(1) hue-rotate(180deg)}html.lt img,html.lt #rcpt{filter:invert(1) hue-rotate(180deg)}
 .tc .dr{position:absolute;left:8px;bottom:8px;background:#e8b04a;color:#2a1d0a;border-radius:8px;padding:1px 7px;font-size:.68rem;font-weight:700}
 .btn.pulse{animation:bpu 1.8s infinite}@keyframes bpu{50%{box-shadow:0 0 0 6px rgba(217,169,91,.4)}}
+.dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:8px 6px;font-size:1.3rem;color:var(--mute);line-height:1}.card.drg{opacity:.5;outline:2px dashed var(--leaf)}.card.over{box-shadow:0 -5px 0 var(--leaf)}
 .tc.old{border-color:#ffd24a;animation:pl 1.6s infinite}@keyframes pl{50%{box-shadow:inset 0 0 0 4px #ffd24a}}
 @media print{html.lt,html.lt img,html.lt #rcpt{filter:none}.bar,header,.sheet-bg{display:none!important}body{background:#fff;padding:0;max-width:none}.rcw{padding:0}#rcpt{border:0;max-width:none;padding:0}}
 </style>
@@ -398,7 +399,7 @@ function floorHtml(edit){
   else{var t=st.tables[i],b=t.items.length,dim=!edit&&((flt==='free'&&b)||(flt==='busy'&&!b));
    h+='<button class="tc '+(b?'busy':'free')+(edit&&i===selT?' sel':'')+(dim?' dim':'')+(b&&!edit&&since(t)&&Date.now()-since(t)>(st.oldMin||60)*60000?' old':'')+'" data-a="'+(edit?'tsel':'table')+'"  data-i="'+i+'">'+(!edit&&drafts[t.id]&&drafts[t.id].length?'<span class="dr">Draf '+drafts[t.id].length+'</span>':'')+(b?'<span class="tl">'+IC.fork+cnt(t)+'</span>'+(since(t)?'<span class="tr">'+ctime(since(t))+'</span>':'')+'<span class="mid"><b class="no"'+(t.tk?' style="font-size:1.05rem"':'')+'>'+esc(t.tk?'Bungkus':t.no)+'</b><span class="pp">'+rm(sum(t.items))+'</span></span><i class="bb"></i>':'<span class="tl">'+IC.leaf+'</span><span class="mid"><b class="no"'+(t.tk?' style="font-size:1.05rem"':'')+'>'+esc(t.tk?'Bungkus':t.no)+'</b><span class="st">Kosong</span></span><i class="bd"></i>')+'</button>'}}
  return h+'</div>'}
-function render(){
+function render(){syncSteps();
  // Jika sedang berada di halaman Edit tetapi PIN diaktifkan dari peranti lain, sekat terus dengan PIN Edit
  if(view==="edit"&&st.pinHash&&!editGate&&!needAppLock()){
   // Kekalkan akses jika baru sahaja disahkan, tetapi jika tiada sesi sah, kunci
@@ -450,7 +451,7 @@ function render(){
   h='<header><div><h1>Edit</h1><p>Semua perubahan disimpan terus.</p></div></header><div class="card"><small>Nama restoran (tajuk di skrin utama)</small><div style="margin-top:6px"><input class="fld" data-f="title" value="'+esc(st.title)+'" maxlength="40" aria-label="Nama restoran"></div></div><div class="card"><small>Nama kawasan (di bawah penapis meja)</small><div style="margin-top:6px"><input class="fld" data-f="zone" value="'+esc(st.zone||ZONE0)+'" maxlength="40" aria-label="Nama kawasan"></div></div><div class="card"><small>Amaran meja lama selepas (minit)</small><div style="margin-top:6px"><input class="fld" type="number" inputmode="numeric" min="5" max="600" data-f="oldmin" value="'+(st.oldMin||60)+'" aria-label="Minit amaran meja lama"></div></div><div class="card"><small>Nombor WhatsApp pembuat air (cth 0123456789)</small><div style="margin-top:6px"><input class="fld" type="tel" inputmode="tel" data-f="wa" value="'+esc(st.waNo||'')+'" maxlength="20" placeholder="0123456789" aria-label="Nombor WhatsApp"></div></div><div class="card"><small>Kod QR bayaran (DuitNow / e-wallet)</small><div style="margin-top:8px;text-align:center">'+(st.qr?'<img class="qrimg" style="max-width:180px" src="'+st.qr+'" alt="QR">':'<div style="color:var(--mute)">Belum ada gambar QR.</div>')+'</div><div class="btns" style="margin-top:10px"><button class="btn" data-a="qrpick">'+(st.qr?'Tukar gambar QR':'Pilih gambar QR')+'</button>'+(st.qr?'<button class="btn del" data-a="qrdel">Buang QR</button>':'')+'</div></div><div class="card"><small>Kunci PIN 6 digit ('+(st.pinHash?'AKTIF — diperlukan untuk buka aplikasi &amp; masuk Edit':'tiada PIN')+')</small><div style="margin-top:6px;display:flex;flex-direction:column;gap:8px">'+(st.pinHash?'<input class="fld pinf" id="pin0" type="tel" inputmode="numeric" maxlength="6" placeholder="PIN lama (6 digit)" autocomplete="off">':'')+'<input class="fld pinf" id="pin1" type="tel" inputmode="numeric" maxlength="6" placeholder="'+(st.pinHash?'PIN baru':'Letak PIN baru')+' (6 digit)" autocomplete="off"><input class="fld pinf" id="pin2" type="tel" inputmode="numeric" maxlength="6" placeholder="Ulang PIN baru (6 digit)" autocomplete="off"><div class="btns"><button class="btn" data-a="pinsave">'+(st.pinHash?'Ubah PIN':'Simpan PIN')+'</button>'+(st.pinHash?'<button class="btn del" data-a="pinremove">Buang PIN</button><button class="btn ghost" data-a="lockNow">Kunci sekarang</button>':'')+'</div></div></div><div class="chips"><button class="chip'+(eTab==="menu"?' on':'')+'" data-a="etab" data-t="menu">Menu dan harga</button><button class="chip'+(eTab==="meja"?' on':'')+'" data-a="etab" data-t="meja">Layout meja</button></div>';
   if(msg)h+='<div class="msg">'+esc(msg)+'</div>';
   if(eTab==="menu"){
-   h+='<div class="chips">'+Object.keys(st.menu).map(function(c){return '<button class="chip'+(c===eCat?' on':'')+'" data-a="ecat" data-c="'+c+'">'+esc(st.menu[c].label.split(" (")[0])+'</button>'}).join("")+'</div>';
+   h+='<div class="chips">'+Object.keys(st.menu).map(function(c){return '<button class="chip'+(c===eCat?' on':'')+'" data-a="ecat" data-c="'+c+'">'+esc(st.menu[c].label.split(" (")[0])+'</button>'}).join("")+'<button class="chip" data-a="addcat">+ Halaman</button></div><div class="card"><div class="top"><input class="fld" data-f="catlbl" value="'+esc(st.menu[eCat].label)+'" aria-label="Nama halaman"><button class="btn ghost small" data-a="catl" aria-label="Alih ke kiri">\u25C0</button><button class="btn ghost small" data-a="catr" aria-label="Alih ke kanan">\u25B6</button>'+(eCat!=="minuman"?'<button class="btn del small" data-a="delcat">Buang</button>':'')+'</div></div>';
    var m=st.menu[eCat];
    h+=m.items.map(function(it,i){
     var hasP=it.p&&it.p.length>0;
@@ -463,9 +464,10 @@ function render(){
     }else{
      szBoxes='<button type="button" class="btn ghost" data-a="mkprice" data-i="'+i+'" style="width:100%">Letak harga / saiz</button>';
     }
-    return '<div class="card"><div class="top"><input class="fld" data-f="n" data-i="'+i+'" value="'+esc(it.n)+'" aria-label="Nama"><button class="btn ghost small" data-a="oos" data-i="'+i+'">'+(it.o?'Ada':'Habis')+'</button><button class="btn del small" data-a="delitem" data-i="'+i+'">Buang</button></div>'+szBoxes+'</div>';
+    return '<div class="card" data-ci="'+i+'"><div class="top"><span class="dh" data-dh aria-label="Seret">\u283F</span><input class="fld" data-f="n" data-i="'+i+'" value="'+esc(it.n)+'" aria-label="Nama"><button class="btn ghost small" data-a="oos" data-i="'+i+'">'+(it.o?'Ada':'Habis')+'</button><button class="btn del small" data-a="delitem" data-i="'+i+'">Buang</button></div>'+szBoxes+'</div>';
    }).join("");
    h+='<div class="stp"><button class="btn ghost" data-a="additem">+ Tambah item</button></div>';
+   h+='<div class="stp"><button class="btn ghost" data-a="dlcsv">Muat turun menu (CSV)</button><button class="btn ghost" data-a="dljson">Muat turun (JSON)</button></div>';
    h+=askReset?'<div class="msg">Semua menu dan layout akan jadi asal. Pesanan semasa juga hilang.</div><div class="stp"><button class="btn ghost" data-a="noreset">Batal</button><button class="btn del" data-a="doreset">Ya, set semula</button></div>':'<div class="stp"><button class="btn ghost" data-a="reset">Set semula ke asal</button></div>';
   }else{
    h+='<div class="stp"><span>Kolum: <b>'+st.cols+'</b></span><button data-a="dim" data-d="c-">−</button><button data-a="dim" data-d="c+">+</button></div><div class="stp"><span>Baris: <b>'+st.rows+'</b></span><button data-a="dim" data-d="r-">−</button><button data-a="dim" data-d="r+">+</button></div>';
@@ -478,6 +480,14 @@ function render(){
 }
 function closeSheet(){pending=null;$("sbg").classList.remove("open")}
 function mj(t){return t.tk?'Bungkus':'Meja '+esc(t.no)}
+function syncSteps(){STEPS[0].c=Object.keys(st.menu).filter(function(k){return k!=="minuman"})}
+function dlFile(n,t,x){var b=new Blob([x],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},3000)}
+function menuCsv(){var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'},r=[['Halaman','Item','Saiz','Harga (RM)','Habis'].map(q).join(',')];Object.keys(st.menu).forEach(function(c){var m=st.menu[c];m.items.forEach(function(it){var bs=[m.label,it.n];if(it.p&&it.p.length)it.p.forEach(function(p,k){r.push(bs.concat([(it.s&&it.s[k])||'',(+p).toFixed(2),it.o?'Ya':'']).map(q).join(','))});else r.push(bs.concat(['','Percuma',it.o?'Ya':'']).map(q).join(','))})});return '\ufeff'+r.join('\r\n')}
+function fnm(){return 'menu-'+(st.title||'kedai').replace(/[^\w-]+/g,'-')+'-'+new Date().toISOString().slice(0,10)}
+(function(){var D=null;document.addEventListener('pointerdown',function(e){var h=e.target.closest&&e.target.closest('[data-dh]');if(!h)return;var c=h.closest('.card[data-ci]');if(!c)return;e.preventDefault();D={from:+c.dataset.ci,el:c,to:+c.dataset.ci};c.classList.add('drg');try{h.setPointerCapture(e.pointerId)}catch(x){}});
+document.addEventListener('pointermove',function(e){if(!D)return;var t=document.elementFromPoint(e.clientX,e.clientY),c=t&&t.closest&&t.closest('.card[data-ci]');document.querySelectorAll('.card.over').forEach(function(n){n.classList.remove('over')});if(c){D.to=+c.dataset.ci;if(D.to!==D.from)c.classList.add('over')}if(e.clientY<90)window.scrollBy(0,-14);else if(e.clientY>innerHeight-90)window.scrollBy(0,14)});
+function end(e){if(!D)return;var d=D;D=null;d.el.classList.remove('drg');document.querySelectorAll('.card.over').forEach(function(n){n.classList.remove('over')});if(e.type==='pointerup'&&d.to!==d.from){var a=st.menu[eCat].items;a.splice(d.to,0,a.splice(d.from,1)[0]);save();render()}}
+document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end)})();
 var qty=1,askLeave=false,drafts={},litMode=false;try{drafts=JSON.parse(localStorage.getItem('kiraDraft')||'{}')}catch(e){}try{litMode=localStorage.getItem('kiraTheme')==='1'}catch(e){}document.documentElement.classList.toggle('lt',litMode);
 function favOrd(a){var fv=st.fav||{};return a.map(function(it,i){return [it,i]}).sort(function(x,y){return (fv[y[0].n]||0)-(fv[x[0].n]||0)||x[1]-y[1]})}
 setInterval(function(){if(view==='floor')render()},60000);
@@ -523,7 +533,7 @@ var cfgFresh=false,db=null,canEd=true,syncSt='off',pushed={cfg:'',t:{}},ct=null,
 var SYNC={on:'● Sync',off:'○ Tak sync',err:'⚠ Sync gagal',wait:'⏳ Tunggu pemilik'};
 var SYNCT={on:'Sync',off:'Tak sync',err:'Sync gagal',wait:'Tunggu pemilik'},SYNCC={on:'#3fae60',off:'#8a8070',err:'#d9503a',wait:'#e8b04a'};
 function nid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
-function cfgObj(){return {title:st.title,zone:st.zone||ZONE0,old:st.oldMin||60,wa:st.waNo||'',pinHash:st.pinHash||'',pinSalt:st.pinSalt||'',pinLen:st.pinLen||0,menu:st.menu,cols:st.cols,rows:st.rows}}
+function cfgObj(){return {title:st.title,zone:st.zone||ZONE0,old:st.oldMin||60,wa:st.waNo||'',pinHash:st.pinHash||'',pinSalt:st.pinSalt||'',pinLen:st.pinLen||0,menu:st.menu,ord:Object.keys(st.menu),cols:st.cols,rows:st.rows}}
 function tObj(t){return {no:t.no,x:t.x,y:t.y,items:t.items,tk:t.tk||0}}
 function wr(p){try{Promise.resolve(p).catch(function(){syncSt='err';if(view==='edit')msg='Tak dapat simpan ke pelayan. Hanya pemilik atau editor boleh ubah menu dan layout.';if(!typing())render()})}catch(e){}}
 function pushCfg(){ctPending=false;if(!db)return;var c=JSON.stringify(cfgObj());if(c!==pushed.cfg){pushed.cfg=c;wr(db.doc('cfg/main').set(JSON.parse(c)))}}
@@ -548,7 +558,7 @@ function reconcile(){
  if(ce&&cfgFresh&&!ctPending&&view!=='edit'){
   cfgFresh=false;var o=cS.data();
   if(o.title)st.title=o.title;
-  if(o.menu)st.menu=o.menu;
+  if(o.menu){st.menu=o.menu;if(o.ord){var nmn={};o.ord.forEach(function(k){if(st.menu[k])nmn[k]=st.menu[k]});Object.keys(st.menu).forEach(function(k){if(!nmn[k])nmn[k]=st.menu[k]});st.menu=nmn}}
   if(o.cols)st.cols=o.cols;
   if(o.rows)st.rows=o.rows;
   if(o.zone)st.zone=o.zone;if(o.old)st.oldMin=o.old;
@@ -574,7 +584,7 @@ if(window.claude&&claude.use)Promise.all([claude.use('db'),claude.use('user')]).
 document.addEventListener("input",function(e){
  var f=e.target.dataset&&e.target.dataset.f;if(!f)return;
  var i=+e.target.dataset.i,k=+e.target.dataset.k,v=e.target.value;
- if(f==="wa"){st.waNo=v}else if(f==="zone"){st.zone=v}else if(f==="title"){st.title=v;document.title=v||"Selera Kampung"}else if(f==="no"){if(st.tables[selT])st.tables[selT].no=v||"?"}else if(f==="oldmin"){st.oldMin=Math.min(600,Math.max(5,parseInt(v)||60))}else if(f==="nm"){st.nm=st.nm||[];st.nm[k]=v.trim()}
+ if(f==="wa"){st.waNo=v}else if(f==="zone"){st.zone=v}else if(f==="title"){st.title=v;document.title=v||"Selera Kampung"}else if(f==="no"){if(st.tables[selT])st.tables[selT].no=v||"?"}else if(f==="catlbl"){st.menu[eCat].label=v||"Halaman"}else if(f==="oldmin"){st.oldMin=Math.min(600,Math.max(5,parseInt(v)||60))}else if(f==="nm"){st.nm=st.nm||[];st.nm[k]=v.trim()}
  else{var it=st.menu[eCat].items[i];if(!it)return;if(f==="n")it.n=v;else if(f==="s")it.s[k]=v;else it.p[k]=parseFloat(v)||0}
  save();
 });
@@ -633,6 +643,11 @@ document.addEventListener("click",function(e){
  else if(a==="tk"){var occ={};T.forEach(function(t){occ[t.x+","+t.y]=1});var px=-1,py=-1;for(var yy=0;yy<=st.rows&&px<0;yy++)for(var xx=0;xx<st.cols&&px<0;xx++)if(!occ[xx+","+yy]&&(yy<st.rows||st.rows<14)){px=xx;py=yy}if(px>=0){if(py>=st.rows)st.rows=py+1;st.tkN=(st.tkN||0)+1;T.push({id:nid(),no:"Bungkus",x:px,y:py,items:[],tk:1});sel=T.length-1;view="order";step=0;draft=[];oq="";curWho=-1;save()}}
  else if(a==="dup"){var arr=view==="order"?draft:T[sel].items,cp=JSON.parse(JSON.stringify(arr[i]));if(view!=="order")cp.at=Date.now();arr.splice(i+1,0,cp);save()}
  else if(a==="warpt"){window.open("https://wa.me/?text="+encodeURIComponent(rptText(histList,hFrom,hTo)),"_blank");return}
+ else if(a==="addcat"){var cn=prompt("Nama halaman baru (cth Kuih, Sup)");if(cn&&cn.trim()){var ck="k"+Date.now().toString(36);st.menu[ck]={label:cn.trim(),items:[]};eCat=ck;save()}}
+ else if(a==="delcat"){if(eCat!=="minuman"&&confirm("Buang halaman "+st.menu[eCat].label+" dan semua item di dalamnya?")){delete st.menu[eCat];eCat=Object.keys(st.menu)[0];save()}}
+ else if(a==="catl"||a==="catr"){var ks=Object.keys(st.menu),ix=ks.indexOf(eCat),jx=ix+(a==="catr"?1:-1);if(jx>=0&&jx<ks.length){var t0=ks[ix];ks[ix]=ks[jx];ks[jx]=t0;var nm2={};ks.forEach(function(k){nm2[k]=st.menu[k]});st.menu=nm2;save()}}
+ else if(a==="dlcsv"){dlFile(fnm()+".csv","text/csv;charset=utf-8",menuCsv());return}
+ else if(a==="dljson"){dlFile(fnm()+".json","application/json",JSON.stringify({title:st.title,menu:st.menu},null,1));return}
  else if(a==="cw"){curWho=+b.dataset.k}
  else if(a==="cwm"){splitN=Math.min(10,splitN+1)}
  else if(a==="oos"){var oi=st.menu[eCat].items[i];if(oi.o)delete oi.o;else oi.o=1;save()}
